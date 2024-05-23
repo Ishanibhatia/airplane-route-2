@@ -1,10 +1,10 @@
-name: Rust CI
+name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -36,5 +36,10 @@ jobs:
         npm install
         npm run build
 
-    - name: Deployment Complete
-      run: echo "Build and test completed successfully. Deployment step can be added here."
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          target/release/srfinder
+          frontend/dist
