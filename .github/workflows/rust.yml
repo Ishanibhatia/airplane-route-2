@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -43,3 +43,27 @@ jobs:
         path: |
           target/release/srfinder
           frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: build
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd build/frontend/dist
+        git init
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Deploy to GitHub Pages"
+        git push --force "https://Ishanibhatia@github.com/Ishanibhatia/airplane-route-2.git" HEAD:gh-pages
